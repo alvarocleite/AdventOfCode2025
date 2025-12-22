@@ -28,16 +28,15 @@ My primary objective is to master Python. Specifically, I focus on:
 1. Create a virtual environment and install dependencies (if any):
 
 ```bash
-cd dayXX # replace XX with the day number
-python -m venv dayXXenv
-source dayXXenv/bin/activate  # On Windows use `dayXXenv\Scripts\activate`
+python -m venv aoc2025env
+source aoc2025env/bin/activate  # On Windows use `aoc2025env\Scripts\activate`
 pip install -r requirements.txt   # if a requirements file exists
 ```
 
 2. Run a solution (example):
 
 ```bash
-python dayXX.py
+python dayXX/dayXX.py
 ```
 
 **AI assistance details**
