@@ -1,7 +1,12 @@
 
+import os
+from typing import Callable
+
 DIAL_START_POS = 50
 DIAL_SIZE = 100
-INPUT_FILE_PATH = 'PuzzleInput.txt'
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+INPUT_FILE_PATH = os.path.join(script_dir, 'PuzzleInput.txt')
 
 def read_input_file(file_path: str) -> list[str]:
     """Reads lines from a specified text file and strips whitespace from each line.
