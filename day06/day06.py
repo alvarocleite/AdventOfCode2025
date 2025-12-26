@@ -1,26 +1,15 @@
 
 import os
+import sys
 from typing import List, Tuple
 import math
 
+# Add parent directory to path to import utils
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import utils
+
 script_dir = os.path.dirname(os.path.abspath(__file__))
 INPUT_FILE_PATH = os.path.join(script_dir, 'PuzzleInput.txt')
-
-def read_input_file(file_path: str) -> List[str]:
-    """
-    Reads lines from a specified text file.
-
-    Each line is read and trailing whitespace is stripped.
-
-    Args:
-        file_path: The path to the input file.
-
-    Returns:
-        A list of strings, where each string is a line from the file.
-    """
-    with open(file_path, 'r', encoding='utf-8') as file:
-        lines = [line.strip() for line in file]
-    return lines
 
 def build_occupancy_map(lines: List[str]) -> List[bool]:
     """
@@ -202,7 +191,7 @@ def main() -> None:
     """
     Main function to run the solution.
     """
-    lines = read_input_file(INPUT_FILE_PATH)
+    lines = utils.read_grid_padded(INPUT_FILE_PATH)
     if not lines:
         print("No input data.")
         return

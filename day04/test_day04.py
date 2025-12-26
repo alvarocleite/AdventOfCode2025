@@ -36,14 +36,14 @@ class TestDay04(unittest.TestCase):
         self.assertIn((1, 1), accessible_5)
 
     def test_part01_execution(self):
-        lines = day04.read_input_file(day04.INPUT_FILE_PATH)
+        lines = day04.utils.read_input_file(day04.INPUT_FILE_PATH)
         try:
             day04.part01(lines)
         except Exception as e:
             self.fail(f"part01() raised {e} unexpectedly!")
 
     def test_part02_execution(self):
-        lines = day04.read_input_file(day04.INPUT_FILE_PATH)
+        lines = day04.utils.read_input_file(day04.INPUT_FILE_PATH)
         try:
             day04.part02(lines)
         except Exception as e:

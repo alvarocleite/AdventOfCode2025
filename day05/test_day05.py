@@ -27,7 +27,7 @@ class TestDay05(unittest.TestCase):
         self.assertEqual(day05.count_fresh_ingredients(ranges, ids), 1)
 
     def test_part01_execution(self):
-        lines = day05.read_input_file(day05.INPUT_FILE_PATH)
+        lines = day05.utils.read_input_file(day05.INPUT_FILE_PATH)
         fresh_ranges, available_ids = day05.parse_inventory_data(lines)
         merged_ranges = day05.merge_ranges(fresh_ranges)
         try:
@@ -36,7 +36,7 @@ class TestDay05(unittest.TestCase):
             self.fail(f"part01() raised {e} unexpectedly!")
 
     def test_part02_execution(self):
-        lines = day05.read_input_file(day05.INPUT_FILE_PATH)
+        lines = day05.utils.read_input_file(day05.INPUT_FILE_PATH)
         fresh_ranges, _ = day05.parse_inventory_data(lines)
         merged_ranges = day05.merge_ranges(fresh_ranges)
         try:

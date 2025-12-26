@@ -47,7 +47,7 @@ class TestDay06(unittest.TestCase):
         self.assertEqual(blocks[1], ["2", "+"])
 
     def test_part01_execution(self):
-        lines = day06.read_input_file(day06.INPUT_FILE_PATH)
+        lines = day06.utils.read_grid_padded(day06.INPUT_FILE_PATH)
         problem_blocks, _ = day06.extract_problem_blocks(lines)
         try:
             day06.part01(problem_blocks)
@@ -55,7 +55,7 @@ class TestDay06(unittest.TestCase):
             self.fail(f"part01() raised {e} unexpectedly!")
 
     def test_part02_execution(self):
-        lines = day06.read_input_file(day06.INPUT_FILE_PATH)
+        lines = day06.utils.read_grid_padded(day06.INPUT_FILE_PATH)
         problem_blocks, _ = day06.extract_problem_blocks(lines)
         try:
             day06.part02(problem_blocks)

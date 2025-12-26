@@ -1,25 +1,15 @@
 
 import os
+import sys
 from typing import Callable
+
+# Add parent directory to path to import utils
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import utils
 
 # Get the directory where the script is located and build the full path to the input file
 script_dir = os.path.dirname(os.path.abspath(__file__))
 INPUT_FILE_PATH = os.path.join(script_dir, 'PuzzleInput.txt')
-
-def read_input_file(file_path: str) -> list[str]:
-    """Reads lines from a specified text file and strips whitespace from each line.
-
-    Args:
-        file_path (str): The path to the input file.
-    Returns:
-        list[str]: A list of strings, where each string is a line from the file
-                   with leading/trailing whitespace removed.
-    """
-    
-    with open(file_path, 'r') as file:
-        lines = [line.strip() for line in file.readlines()]
-    
-    return lines
 
 def split_by_comma(input_str: str) -> list[str]:
     """Splits a string by commas and strips whitespace from each resulting substring.
@@ -142,7 +132,7 @@ def main():
     Parses the puzzle input and runs the solvers for both parts of the puzzle.
     """
     # Parse input file and prepare data
-    input_lines = read_input_file(INPUT_FILE_PATH)
+    input_lines = utils.read_input_file(INPUT_FILE_PATH)
     range_strs = split_by_comma(input_lines[0])
     value_pairs = parse_all_ranges(range_strs)
 

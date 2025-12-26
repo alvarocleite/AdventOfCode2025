@@ -1,28 +1,17 @@
 
 import os
+import sys
 from typing import Callable
+
+# Add parent directory to path to import utils
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import utils
 
 DIAL_START_POS = 50
 DIAL_SIZE = 100
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 INPUT_FILE_PATH = os.path.join(script_dir, 'PuzzleInput.txt')
-
-def read_input_file(file_path: str) -> list[str]:
-    """Reads lines from a specified text file and strips whitespace from each line.
-
-    Args:
-        file_path (str): The path to the input file.
-
-    Returns:
-        list[str]: A list of strings, where each string is a line from the file
-                   with leading/trailing whitespace removed.
-    """
-
-    with open(file_path, 'r') as file:
-        lines = [line.strip() for line in file.readlines()]
-    
-    return lines
 
 def get_rot_dir_and_distance(move: str) -> tuple[str, int]:
     """Parses a move string to extract the rotation direction and distance.
@@ -166,7 +155,7 @@ def main():
     """
 
     # Parse Input file
-    input_lines = read_input_file(INPUT_FILE_PATH)
+    input_lines = utils.read_input_file(INPUT_FILE_PATH)
     
     part01(input_lines)
     

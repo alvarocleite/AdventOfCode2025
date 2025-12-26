@@ -43,7 +43,7 @@ class TestDay02(unittest.TestCase):
         self.assertEqual(day02.calculate_total_invalid(ranges, day02.is_value_invalid_part1), 11)
 
     def test_part01_execution(self):
-        input_lines = day02.read_input_file(day02.INPUT_FILE_PATH)
+        input_lines = day02.utils.read_input_file(day02.INPUT_FILE_PATH)
         range_strs = day02.split_by_comma(input_lines[0])
         value_pairs = day02.parse_all_ranges(range_strs)
         try:
@@ -52,7 +52,7 @@ class TestDay02(unittest.TestCase):
             self.fail(f"part01() raised {e} unexpectedly!")
 
     def test_part02_execution(self):
-        input_lines = day02.read_input_file(day02.INPUT_FILE_PATH)
+        input_lines = day02.utils.read_input_file(day02.INPUT_FILE_PATH)
         range_strs = day02.split_by_comma(input_lines[0])
         value_pairs = day02.parse_all_ranges(range_strs)
         try:

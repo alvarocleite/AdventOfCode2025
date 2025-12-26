@@ -1,27 +1,17 @@
 
 import bisect
 import os
+import sys
 from typing import List, Tuple
+
+# Add parent directory to path to import utils
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import utils
 
 Range = Tuple[int, int]
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 INPUT_FILE_PATH = os.path.join(script_dir, 'PuzzleInput.txt')
-
-def read_input_file(file_path: str) -> List[str]:
-    """Reads lines from a specified text file.
-
-    Each line is read and trailing whitespace is stripped.
-
-    Args:
-        file_path: The path to the input file.
-
-    Returns:
-        A list of strings, where each string is a line from the file.
-    """
-    with open(file_path, 'r', encoding='utf-8') as file:
-        lines = [line.strip() for line in file]
-    return lines
 
 def parse_range(range_str: str) -> Range:
     """Parses a single range string (e.g., "5-10") to extract start and end integers.
@@ -153,7 +143,7 @@ def main() -> None:
     """
     Main function to run the solution.
     """
-    lines = read_input_file(INPUT_FILE_PATH)
+    lines = utils.read_input_file(INPUT_FILE_PATH)
     fresh_ranges, available_ids = parse_inventory_data(lines)
     merged_ranges = merge_ranges(fresh_ranges)
     part01(merged_ranges, available_ids)

@@ -31,7 +31,7 @@ class TestDay07(unittest.TestCase):
         self.assertEqual(day07.simulate_beams(lines, (2, 0)), 1)
 
     def test_part01_execution(self):
-        lines = day07.read_input_file(day07.INPUT_FILE_PATH)
+        lines = day07.utils.read_grid_padded(day07.INPUT_FILE_PATH)
         try:
             day07.part01(lines)
         except Exception as e:

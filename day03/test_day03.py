@@ -31,14 +31,14 @@ class TestDay03(unittest.TestCase):
         self.assertEqual(day03.solve(lines, 3), 888)
 
     def test_part01_execution(self):
-        lines = day03.read_input_file(day03.INPUT_FILE_PATH)
+        lines = day03.utils.read_input_file(day03.INPUT_FILE_PATH)
         try:
             day03.part01(lines)
         except Exception as e:
             self.fail(f"part01() raised {e} unexpectedly!")
 
     def test_part02_execution(self):
-        lines = day03.read_input_file(day03.INPUT_FILE_PATH)
+        lines = day03.utils.read_input_file(day03.INPUT_FILE_PATH)
         try:
             day03.part02(lines)
         except Exception as e:

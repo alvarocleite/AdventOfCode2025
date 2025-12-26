@@ -31,7 +31,7 @@ class TestDay01(unittest.TestCase):
 
     def test_part01_execution(self):
         # Explicitly test part01 with real input
-        input_lines = day01.read_input_file(day01.INPUT_FILE_PATH)
+        input_lines = day01.utils.read_input_file(day01.INPUT_FILE_PATH)
         try:
             day01.part01(input_lines)
         except Exception as e:
@@ -39,7 +39,7 @@ class TestDay01(unittest.TestCase):
 
     def test_part02_execution(self):
         # Explicitly test part02 with real input
-        input_lines = day01.read_input_file(day01.INPUT_FILE_PATH)
+        input_lines = day01.utils.read_input_file(day01.INPUT_FILE_PATH)
         try:
             day01.part02(input_lines)
         except Exception as e:
