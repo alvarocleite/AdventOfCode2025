@@ -129,16 +129,25 @@ def count_fresh_ingredients(merged_ranges: List[Range], ingredient_ids: List[int
                 
     return fresh_count
 
-def part01(fresh_ingredient_id_ranges: List[Range], available_ingredient_ids: List[int]) -> None:
+def part01(merged_ranges: List[Range], available_ingredient_ids: List[int]) -> None:
     """
     Calculates and prints the number of fresh ingredients.
     """
     print("Advent of Code 2025 - Day 5 - Part 1")
     
-    merged_ranges = merge_ranges(fresh_ingredient_id_ranges)
     fresh_count = count_fresh_ingredients(merged_ranges, available_ingredient_ids)
 
     print(f"Total fresh ingredients: {fresh_count}")
+
+def part02(merged_ranges: List[Range]) -> None:
+    """
+    Calculates and prints the total number of fresh ingredient IDs.
+    """
+    print("Advent of Code 2025 - Day 5 - Part 2")
+    
+    total_fresh_ids = sum(end - start + 1 for start, end in merged_ranges)
+
+    print(f"Total fresh ingredient IDs: {total_fresh_ids}")
 
 def main() -> None:
     """
@@ -146,7 +155,9 @@ def main() -> None:
     """
     lines = read_input_file(INPUT_FILE_PATH)
     fresh_ranges, available_ids = parse_inventory_data(lines)
-    part01(fresh_ranges, available_ids)
+    merged_ranges = merge_ranges(fresh_ranges)
+    part01(merged_ranges, available_ids)
+    part02(merged_ranges)
 
 if __name__ == "__main__":
     main()
