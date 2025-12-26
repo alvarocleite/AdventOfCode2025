@@ -31,50 +31,47 @@ def find_char_position(lines: List[str], char: str) -> Tuple[int, int]:
             start_row = r
             return start_col, start_row
     
-    print("Start position 'S' not found.")
     return -1, -1
 
-def simulate_beams(lines: List[str], start_position: Tuple[int, int]) -> int:
+def run_simulation(lines: List[str], start_position: Tuple[int, int]) -> Tuple[int, int]:
     """
-    Simulates the tachyon beams and counts splits.
+    Simulates the tachyon particle dynamics to calculate both split events and active timelines.
     
     Args:
         lines: The grid lines.
         start_position: Tuple (start_col, start_row).
     
     Returns:
-        An integer with the number of beam splits
+        A tuple (total_splits, total_timelines).
     """
     start_col, start_row = start_position
-    active_beams = {start_col}
+    active_states = {start_col: 1}
     total_splits = 0
-    width = len(lines[0])
     height = len(lines)
     
     for r in range(start_row + 1, height):
-        next_beams = set()
+        next_states = {}
         
-        for col in active_beams:
+        for col, count in active_states.items():
             # Bounds check
-            if col < 0 or col >= width:
+            if col < 0 or col >= len(lines[r]):
                 continue
                 
             char = lines[r][col]
             
             if char == '^':
                 total_splits += 1
-                # Beam splits: new beams at col-1 and col+1 continuing downward
-                next_beams.add(col - 1)
-                next_beams.add(col + 1)
+                
+                next_states[col - 1] = next_states.get(col - 1, 0) + count
+                next_states[col + 1] = next_states.get(col + 1, 0) + count
             else:
-                # Beam passes through
-                next_beams.add(col)
+                next_states[col] = next_states.get(col, 0) + count
         
-        active_beams = next_beams
-        if not active_beams:
+        active_states = next_states
+        if not active_states:
             break
 
-    return total_splits
+    return total_splits, sum(active_states.values())
 
 def part01(lines: List[str]) -> None:
     """
@@ -87,9 +84,32 @@ def part01(lines: List[str]) -> None:
         return
 
     start_col, start_row = find_char_position(lines, 'S')
-    total_splits = simulate_beams(lines, (start_col, start_row))
+    if start_col == -1:
+        print("Start position 'S' not found.")
+        return
+
+    total_splits, _ = run_simulation(lines, (start_col, start_row))
     
     print(f"Total Splits: {total_splits}")
+
+def part02(lines: List[str]) -> None:
+    """
+    Solves Day 7 Part 2: Count total active timelines (paths).
+    """
+    print("Advent of Code 2025 - Day 7 - Part 2")
+    
+    if not lines:
+        print("No input data.")
+        return
+
+    start_col, start_row = find_char_position(lines, 'S')
+    if start_col == -1:
+        print("Start position 'S' not found.")
+        return
+
+    _, total_timelines = run_simulation(lines, (start_col, start_row))
+    
+    print(f"Total Timelines: {total_timelines}")
 
 def main() -> None:
     """
@@ -97,6 +117,7 @@ def main() -> None:
     """
     lines = utils.read_grid_padded(INPUT_FILE_PATH)
     part01(lines)
+    part02(lines)
 
 if __name__ == "__main__":
     main()
