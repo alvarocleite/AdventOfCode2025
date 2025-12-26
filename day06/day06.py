@@ -113,17 +113,17 @@ def extract_problem_blocks(lines: List[str]) -> Tuple[List[List[str]], List[Tupl
 
     return problem_blocks, spans
 
-def calc_column_value(problem_block: List[str], operator_pos: int) -> int:
+def solve_part1_block(problem_block: List[str]) -> int:
     """
-    Calculates the value of a problem block based on its character data.
+    Calculates the value of a problem block for Part 1 (horizontal numbers).
 
     Args:
         problem_block: A list of strings representing the problem block data.
-        operator_pos: The position of the operator in the block.
 
     Returns:
         The calculated integer value for the problem block.
     """
+    operator_pos = len(problem_block) - 1
     operator = problem_block[operator_pos].strip()
     
     numbers = []
@@ -139,12 +139,70 @@ def calc_column_value(problem_block: List[str], operator_pos: int) -> int:
     else:
         raise ValueError(f"Unknown operation: '{operator}'")
 
-def part01(lines: List[str]) -> None:
+def solve_part2_block(problem_block: List[str]) -> int:
+    """Calculates the value of a block for Part 2 (vertical numbers).
+
+    Args:
+        problem_block: A list of strings representing the problem block.
+
+    Returns:
+        The calculated integer value.
+    """
+    # Find operator from the last row
+    operator = problem_block[-1].strip()
+    
+    width = len(problem_block[0])
+    height = len(problem_block)
+    numbers = []
+
+    # Iterate columns (order doesn't strictly matter for +/*, but problem says R->L)
+    for col in range(width - 1, -1, -1):
+        digits = ""
+        # Iterate rows (top to bottom), excluding the last row (operator)
+        for row in range(height - 1):
+            char = problem_block[row][col]
+            if char.isdigit():
+                digits += char
+        
+        if digits:
+            numbers.append(int(digits))
+
+    if operator == '+':
+        return sum(numbers)
+    elif operator == '*':
+        return math.prod(numbers)
+    else:
+        raise ValueError(f"Unknown operation: '{operator}'")
+
+def part01(problem_blocks: List[List[str]]) -> None:
     """
     Solves Part 1: Uses extracted problem blocks to find boundaries, then solves rows.
     """
     print("Advent of Code 2025 - Day 6 - Part 1")
     
+    grand_total = 0
+    for block in problem_blocks:
+        grand_total += solve_part1_block(block)
+    
+    print(f"Grand Total: {grand_total}")
+
+def part02(problem_blocks: List[List[str]]) -> None:
+    """
+    Solves Part 2: Vertical numbers in columns.
+    """
+    print("Advent of Code 2025 - Day 6 - Part 2")
+
+    grand_total = 0
+    for block in problem_blocks:
+        grand_total += solve_part2_block(block)
+
+    print(f"Grand Total: {grand_total}")
+
+def main() -> None:
+    """
+    Main function to run the solution.
+    """
+    lines = read_input_file(INPUT_FILE_PATH)
     if not lines:
         print("No input data.")
         return
@@ -155,19 +213,8 @@ def part01(lines: List[str]) -> None:
         print(f"Grand Total: 0 ")
         return
 
-    grand_total = 0
-    for block in problem_blocks:
-        operator_pos = len(block) - 1
-        grand_total += calc_column_value(block, operator_pos)
-    
-    print(f"Grand Total: {grand_total}")
-
-def main() -> None:
-    """
-    Main function to run the solution.
-    """
-    lines = read_input_file(INPUT_FILE_PATH)
-    part01(lines)
+    part01(problem_blocks)
+    part02(problem_blocks)
 
 if __name__ == "__main__":
     main()
