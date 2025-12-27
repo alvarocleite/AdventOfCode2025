@@ -1,7 +1,7 @@
 import os
 import sys
 import math
-from typing import List, Tuple
+from typing import List, Tuple, TypeAlias
 
 # Add parent directory to path to import utils
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -9,6 +9,13 @@ import utils
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 INPUT_FILE_PATH = os.path.join(script_dir, 'PuzzleInput.txt')
+
+# Point3D: (X, Y, Z)
+Point3D: TypeAlias = Tuple[int, int, int]
+# Edge: (distance, index_u, index_v)
+Edge: TypeAlias = Tuple[float, int, int]
+
+DEFAULT_MAX_CONNECTIONS = 1000
 
 class UnionFind:
     """
@@ -32,6 +39,7 @@ class UnionFind:
         self.parent: List[int] = list(range(size))
         self.rank: List[int] = [0] * size
         self.size: List[int] = [1] * size  # Tracks the number of elements in the set rooted at i
+        self.num_components = size
 
     def find(self, i: int) -> int:
         """
@@ -79,13 +87,30 @@ class UnionFind:
             # Attach the shorter tree to the taller one
             self.parent[root_j] = root_i
             self.size[root_i] += self.size[root_j]
+            self.num_components -= 1
             
             if self.rank[root_i] == self.rank[root_j]:
                 self.rank[root_i] += 1
             return True
         return False
 
-def parse_input(lines: List[str]) -> List[Tuple[int, int, int]]:
+    def get_component_sizes(self) -> List[int]:
+        """
+        Retrieves the sizes of all disjoint sets (connected components).
+
+        Returns:
+            A list of integer sizes, sorted in descending order.
+        """
+        root_map = {}
+        # Iterate over all elements to ensure we find the representative of each set
+        for i in range(len(self.parent)):
+            root = self.find(i)
+            if root not in root_map:
+                root_map[root] = self.size[root]
+        
+        return sorted(root_map.values(), reverse=True)
+
+def parse_input(lines: List[str]) -> List[Point3D]:
     """
     Parses list of 'x,y,z' strings into tuples of integers.
     
@@ -95,15 +120,15 @@ def parse_input(lines: List[str]) -> List[Tuple[int, int, int]]:
     Returns:
         A list of tuples representing the (x, y, z) coordinates.
     """
-    points = []
+    points: List[Point3D] = []
     for line in lines:
         if not line.strip():
             continue
         parts = list(map(int, line.strip().split(',')))
-        points.append(tuple(parts))
+        points.append((parts[0], parts[1], parts[2]))
     return points
 
-def calculate_distance(p1: Tuple[int, int, int], p2: Tuple[int, int, int]) -> float:
+def calculate_distance(p1: Point3D, p2: Point3D) -> float:
     """
     Calculates Euclidean distance between two 3D points.
     
@@ -116,31 +141,52 @@ def calculate_distance(p1: Tuple[int, int, int], p2: Tuple[int, int, int]) -> fl
     """
     return math.sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2 + (p1[2]-p2[2])**2)
 
-def gen_edges(num_jb: int, points: List[Tuple[int, int, int]]) -> List[Tuple[float, int, int]]:
+def get_sorted_edges(points: List[Point3D]) -> List[Edge]:
     """
     Generates and sorts all possible edges between junction boxes based on distance.
     
     Args:
-        num_jb: The number of junction boxes.
         points: The list of coordinate tuples.
 
     Returns:
         A list of tuples (distance, index_i, index_j), sorted by distance (ascending).
     """
-    edges = []
+    edges: List[Edge] = []
+    num_jb = len(points)
     for i in range(num_jb):
         for j in range(i + 1, num_jb):
             dist = calculate_distance(points[i], points[j])
             edges.append((dist, i, j))
     
     # Sort edges by distance (smallest first)
-    edges.sort()
+    edges.sort(key=lambda x: x[0])
 
     return edges
 
-def solve(lines: List[str], max_connections: int = 1000) -> int:
+def initialize_system(lines: List[str]) -> Tuple[List[Point3D], List[Edge], UnionFind]:
     """
-    Solves the Day 8 puzzle.
+    Parses input, generates edges, and initializes the DSU structure.
+    
+    Args:
+        lines: Raw input lines.
+        
+    Returns:
+        Tuple containing:
+        - List of 3D points
+        - Sorted list of edges (distance, u, v)
+        - Initialized UnionFind instance
+    """
+    points = parse_input(lines)
+    sorted_edges = get_sorted_edges(points)
+    uf = UnionFind(len(points))
+    return points, sorted_edges, uf
+
+def solve_part1(lines: List[str], max_connections: int = DEFAULT_MAX_CONNECTIONS) -> int:
+    """
+    Solves the Day 8 Part 1 puzzle.
+    
+    Connects the closest pairs of junction boxes exactly `max_connections` times,
+    regardless of whether they are already connected.
     
     Args:
         lines: Input lines containing coordinates.
@@ -149,53 +195,61 @@ def solve(lines: List[str], max_connections: int = 1000) -> int:
     Returns:
         The product of the sizes of the three largest circuits.
     """
-    points = parse_input(lines)
-    n = len(points)
-    
-    # Generate all edges
-    sorted_edges = gen_edges(n, points)
-
-    # Process the top `max_connections` edges
-    uf = UnionFind(n)
+    _, sorted_edges, uf = initialize_system(lines)
     
     # Process exactly max_connections, or number of edges if fewer exist
     limit = min(len(sorted_edges), max_connections)
     for k in range(limit):
         _, edge_A, edge_B = sorted_edges[k]
         uf.union(edge_A, edge_B)
+        # Note: We ignore the return value of union(). In Part 1, redundant connections
+        # still count towards the 'max_connections' limit.
     
-    # Calculate circuit sizes
-    # Find the unique roots and their sizes
-    root_map = {} # root_index -> size
-    for i in range(n):
-        root = uf.find(i)
-        # We rely on the size array in the root
-        if root not in root_map:
-            root_map[root] = uf.size[root]
-            
-    sizes = list(root_map.values())
-    sizes.sort(reverse=True)
+    # Gather circuit sizes
+    sizes = uf.get_component_sizes()
     
-    # Multiply top 3
+    # Return product of top 3
     if len(sizes) < 3:
-        result = 1
-        for s in sizes:
-            result *= s
-        return result
-    else:
-        return sizes[0] * sizes[1] * sizes[2]
+        return math.prod(sizes)
+    
+    return sizes[0] * sizes[1] * sizes[2]
 
-def part01(lines: List[str]) -> None:
-    """Executes Part 1 of the puzzle."""
-    print("Advent of Code 2025 - Day 8 - Part 1")
-
-    result = solve(lines)
-    print(f"Product of three largest circuits: {result}")
+def solve_part2(lines: List[str]) -> int:
+    """
+    Solves the Day 8 Part 2 puzzle.
+    
+    Continues connecting the closest unconnected junction boxes until 
+    a single connected component (circuit) remains.
+    
+    Args:
+        lines: Input lines containing coordinates.
+        
+    Returns:
+        The product of the X-coordinates of the last two junction boxes connected.
+    """
+    points, sorted_edges, uf = initialize_system(lines)
+    
+    # Kruskal's Algorithm logic
+    for _, u, v in sorted_edges:
+        if uf.union(u, v):
+            # A merge occurred (reduced component count)
+            if uf.num_components == 1:
+                # This was the final connection!
+                return points[u][0] * points[v][0]
+                
+    return 0 # Should not be reached
 
 def main():
     """Main execution function."""
     input_lines = utils.read_input_file(INPUT_FILE_PATH)
-    part01(input_lines)
+    
+    print("Advent of Code 2025 - Day 8 - Part 1")
+    result1 = solve_part1(input_lines)
+    print(f"Product of three largest circuits: {result1}")
+
+    print("Advent of Code 2025 - Day 8 - Part 2")
+    result2 = solve_part2(input_lines)
+    print(f"Product of X coordinates of last connection: {result2}")
 
 if __name__ == "__main__":
     main()
