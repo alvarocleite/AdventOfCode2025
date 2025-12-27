@@ -9,7 +9,7 @@ All solutions are implemented in Python and developed with the assistance of AI 
 
 - **Language:** Python 3.10+
 - **AI Assistance:** Gemini CLI
-- **Progress:** Days 01 through 07 complete.
+- **Progress:** Days 01 through 09 complete.
 - **Key Features:** Shared utility module (`utils.py`), automated unit tests (`unittest`), and adherence to Clean Code principles.
 
 ![AdventOfCode2025_img](resources/AdventOfCode2025_img.png)
