@@ -10,7 +10,7 @@ import day10
 class TestDay10(unittest.TestCase):
     """
     Test suite for Day 10: Factory.
-    Tests parsing logic and the brute-force solution algorithm.
+    Tests parsing logic, Part 1 brute-force, and Part 2 linear solver.
     """
     
     def test_parse_machine(self):
@@ -36,14 +36,14 @@ class TestDay10(unittest.TestCase):
         self.assertEqual(joltages, [3, 5, 4, 7])
 
     def test_find_min_presses_example_1(self):
-        """Tests the first example case from the puzzle description."""
+        """Tests the first example case from the puzzle description (Part 1)."""
         # [.##.] (3) (1,3) (2) (2,3) (0,2) (0,1)
         target_mask = 6
         buttons = [8, 10, 4, 12, 5, 3]
         self.assertEqual(day10.find_min_presses(target_mask, buttons), 2)
 
     def test_find_min_presses_example_2(self):
-        """Tests the second example case from the puzzle description."""
+        """Tests the second example case from the puzzle description (Part 1)."""
         # [...#.] (0,2,3,4) (2,3) (0,4) (0,1,2) (1,2,3,4)
         # [...#.] -> index 3 is ON. mask = 1 << 3 = 8
         target_mask = 8
@@ -56,7 +56,7 @@ class TestDay10(unittest.TestCase):
         self.assertEqual(day10.find_min_presses(target_mask, buttons), 3)
 
     def test_find_min_presses_example_3(self):
-        """Tests the third example case from the puzzle description."""
+        """Tests the third example case from the puzzle description (Part 1)."""
         # [.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2)
         # [.###.#] -> indices 1,2,3,5 are ON. 2|4|8|32 = 46
         target_mask = 46
@@ -67,6 +67,27 @@ class TestDay10(unittest.TestCase):
         buttons = [31, 25, 55, 6]
         self.assertEqual(day10.find_min_presses(target_mask, buttons), 2)
 
+    def test_solve_part2_example_1(self):
+        """Tests the first example case for Part 2."""
+        # [.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
+        buttons = [8, 10, 4, 12, 5, 3]
+        target_joltages = [3, 5, 4, 7]
+        self.assertEqual(day10.find_min_presses_for_joltages(target_joltages, buttons), 10)
+
+    def test_solve_part2_example_2(self):
+        """Tests the second example case for Part 2."""
+        # [...#.] (0,2,3,4) (2,3) (0,4) (0,1,2) (1,2,3,4) {7,5,12,7,2}
+        buttons = [29, 12, 17, 7, 30]
+        target_joltages = [7, 5, 12, 7, 2]
+        self.assertEqual(day10.find_min_presses_for_joltages(target_joltages, buttons), 12)
+
+    def test_solve_part2_example_3(self):
+        """Tests the third example case for Part 2."""
+        # [.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}
+        buttons = [31, 25, 55, 6]
+        target_joltages = [10, 11, 11, 5, 10, 5]
+        self.assertEqual(day10.find_min_presses_for_joltages(target_joltages, buttons), 11)
+
     def test_part01_execution(self):
         """Tests that part01 executes on the real input without raising errors."""
         input_lines = day10.utils.read_input_file(day10.INPUT_FILE_PATH)
@@ -74,6 +95,14 @@ class TestDay10(unittest.TestCase):
             day10.part01(input_lines)
         except Exception as e:
             self.fail(f"part01() raised {e} unexpectedly!")
+
+    def test_part02_execution(self):
+        """Tests that part02 executes on the real input without raising errors."""
+        input_lines = day10.utils.read_input_file(day10.INPUT_FILE_PATH)
+        try:
+            day10.part02(input_lines)
+        except Exception as e:
+            self.fail(f"part02() raised {e} unexpectedly!")
 
 if __name__ == '__main__':
     unittest.main(verbosity=2, buffer=True)
