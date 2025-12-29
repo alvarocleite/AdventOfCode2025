@@ -79,5 +79,6 @@ See the repository [LICENSE](LICENSE).
 
 **Links**
 
+[Are you ready for the Advent of Agentic Coding? - Article](https://www.alvarocastroleite.com/posts/2025/12/29/are-you-ready-for-the-advent-of-agentic-coding/)
 [Advent of Code 2025 Official Website](https://adventofcode.com/2025)
 
