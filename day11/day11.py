@@ -96,7 +96,22 @@ def part02(input_lines: list[str]) -> None:
         input_lines (list[str]): The list of input lines.
     """
     print("Advent of Code 2025 - Day 11 - Part 2")
-    print("Part 2 not yet implemented.")
+    graph = parse_input(input_lines)
+    try:
+        # Sequence 1: svr -> ... -> dac -> ... -> fft -> ... -> out
+        paths_dac_fft = (count_paths(graph, 'svr', 'dac') *
+                         count_paths(graph, 'dac', 'fft') *
+                         count_paths(graph, 'fft', 'out'))
+                         
+        # Sequence 2: svr -> ... -> fft -> ... -> dac -> ... -> out
+        paths_fft_dac = (count_paths(graph, 'svr', 'fft') *
+                         count_paths(graph, 'fft', 'dac') *
+                         count_paths(graph, 'dac', 'out'))
+        
+        total_paths = paths_dac_fft + paths_fft_dac
+        print(f"Total paths from 'svr' to 'out' via 'dac' and 'fft': {total_paths}")
+    except ValueError as e:
+        print(f"Error: {e}")
 
 def main() -> None:
     """Main function to run the Advent of Code Day 11 solutions."""

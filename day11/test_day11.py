@@ -21,6 +21,21 @@ class TestDay11(unittest.TestCase):
             "hhh: ccc fff iii",
             "iii: out"
         ]
+        self.example_part2 = [
+            "svr: aaa bbb",
+            "aaa: fft",
+            "fft: ccc",
+            "bbb: tty",
+            "tty: ccc",
+            "ccc: ddd eee",
+            "ddd: hub",
+            "hub: fff",
+            "eee: dac",
+            "dac: fff",
+            "fff: ggg hhh",
+            "ggg: out",
+            "hhh: out"
+        ]
 
     def test_parse_input(self):
         graph = day11.parse_input(self.example_input)
@@ -56,6 +71,23 @@ class TestDay11(unittest.TestCase):
         graph = day11.parse_input(no_path_input)
         count = day11.count_paths(graph, 'you', 'out')
         self.assertEqual(count, 0)
+
+    def test_part2_example(self):
+        # Implement the logic for Part 2 directly in test to verify
+        graph = day11.parse_input(self.example_part2)
+        
+        # Sequence 1: svr -> ... -> dac -> ... -> fft -> ... -> out
+        paths_1 = (day11.count_paths(graph, 'svr', 'dac') *
+                   day11.count_paths(graph, 'dac', 'fft') *
+                   day11.count_paths(graph, 'fft', 'out'))
+                   
+        # Sequence 2: svr -> ... -> fft -> ... -> dac -> ... -> out
+        paths_2 = (day11.count_paths(graph, 'svr', 'fft') *
+                   day11.count_paths(graph, 'fft', 'dac') *
+                   day11.count_paths(graph, 'dac', 'out'))
+                   
+        total = paths_1 + paths_2
+        self.assertEqual(total, 2)
 
 if __name__ == "__main__":
     unittest.main()
